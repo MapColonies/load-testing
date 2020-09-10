@@ -20,6 +20,7 @@ runTimed=false
 
 #configurable and timed test settings
 users=100
+requestDelay=100 #ms
 
 #configurable test settings
 userRequests=100
@@ -37,7 +38,7 @@ mkdir -p ${dir}
 #test
 ${jmeterBin}/jmeter -n -t ./wms.jmx -l ${dir}/wms-res.jtl -JtargetHost=${host} -JtargetPort=${port} -Jusers=${users} -JrequestsPerUser=${userRequests} \
         -JtargetPath=${wmsUrl} -JparamFile=${requestsFile} -JrunTimeSec=${runTimeSec} -JrunTimed=${runTimed} -JrunConfigurable=${runConfigurable} \
-        -JimageFormat=${imageFormat} -Jlayers=${layers} -Jprojection=${projection} -Jversion=${version}
+        -JimageFormat=${imageFormat} -Jlayers=${layers} -Jprojection=${projection} -Jversion=${version} -JrequestDelay=${requestDelay}
 #generate reports
 ${jmeterBin}/JMeterPluginsCMD.sh --generate-png ${dir}/wms-test-rtot.png --generate-csv ${dir}/wms-test-rtot.csv --input-jtl ${dir}/wms-res.jtl --plugin-type ResponseTimesOverTime --width 800 --height 600
 ${jmeterBin}/JMeterPluginsCMD.sh --generate-csv ${dir}/wms-test-agg.csv --input-jtl ${dir}/wms-res.jtl --plugin-type AggregateReport

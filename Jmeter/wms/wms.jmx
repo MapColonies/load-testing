@@ -73,6 +73,11 @@
             <stringProp name="Argument.value">${__P(version,1.1.1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="requestDelay" elementType="Argument">
+            <stringProp name="Argument.name">requestDelay</stringProp>
+            <stringProp name="Argument.value">${__P(requestDelay,100)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
     </TestPlan>
@@ -152,6 +157,10 @@
             <boolProp name="ignoreFirstLine">false</boolProp>
           </CSVDataSet>
           <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">${requestDelay}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
         </hashTree>
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="timed" enabled="true">
@@ -228,6 +237,10 @@
             <stringProp name="shareMode">shareMode.all</stringProp>
             <boolProp name="ignoreFirstLine">false</boolProp>
           </CSVDataSet>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">${requestDelay}</stringProp>
+          </ConstantTimer>
           <hashTree/>
         </hashTree>
       </hashTree>
