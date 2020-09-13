@@ -22,12 +22,12 @@ imageFormat=png
 #preperations
 runTimeSec=$(($runTimeMin * 60))
 now=$(date +"%d-%m-%y-%T")
-dir="${resultsDir}/xyz/${now}"
+dir="${resultsDir}/tms/${now}"
 mkdir -p ${dir}
 #test
-${jmeterBin}/jmeter -n -t ./xyz.jmx -l ${dir}/xyz-res.jtl -JtargetHost=${host} -JtargetPort=${port} -Jusers=${users} -JrequestsPerUser=${userRequests} \
+${jmeterBin}/jmeter -n -t ./tms.jmx -l ${dir}/tms-res.jtl -JtargetHost=${host} -JtargetPort=${port} -Jusers=${users} -JrequestsPerUser=${userRequests} \
         -JrunTimeSec=${runTimeSec} -Jlayer=${layer} -Jversion=${version} -JtmsUrl=${tmsUrl} -JdelayBetweemRequestsMs=${delayBetweenRequests} \
         -Jprojection=${projection} -JimageFormat=${imageFormat}
 #generate reports
-${jmeterBin}/JMeterPluginsCMD.sh --generate-png ${dir}/xyz-test-rtot.png --generate-csv ${dir}/xyz-test-rtot.csv --input-jtl ${dir}/xyz-res.jtl --plugin-type ResponseTimesOverTime --width 800 --height 600
-${jmeterBin}/JMeterPluginsCMD.sh --generate-csv ${dir}/xyz-test-agg.csv --input-jtl ${dir}/xyz-res.jtl --plugin-type AggregateReport
+${jmeterBin}/JMeterPluginsCMD.sh --generate-png ${dir}/tms-test-rtot.png --generate-csv ${dir}/tms-test-rtot.csv --input-jtl ${dir}/tms-res.jtl --plugin-type ResponseTimesOverTime --width 800 --height 600
+${jmeterBin}/JMeterPluginsCMD.sh --generate-csv ${dir}/tms-test-agg.csv --input-jtl ${dir}/tms-res.jtl --plugin-type AggregateReport
