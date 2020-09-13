@@ -25,7 +25,7 @@
           </elementProp>
           <elementProp name="targetPath" elementType="Argument">
             <stringProp name="Argument.name">targetPath</stringProp>
-            <stringProp name="Argument.value">${__P(targerPath,geoserver/GS_Workspace/wms)}</stringProp>
+            <stringProp name="Argument.value">${__P(targetPath,geoserver/GS_Workspace/wms)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="users" elementType="Argument">
@@ -328,14 +328,14 @@
               <boolProp name="HTTPArgument.use_equals">true</boolProp>
               <boolProp name="HTTPArgument.always_encode">false</boolProp>
               <stringProp name="Argument.name">service</stringProp>
-              <stringProp name="Argument.value">wms</stringProp>
+              <stringProp name="Argument.value">WMS</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
             <elementProp name="request" elementType="HTTPArgument">
               <boolProp name="HTTPArgument.use_equals">true</boolProp>
               <boolProp name="HTTPArgument.always_encode">false</boolProp>
               <stringProp name="Argument.name">request</stringProp>
-              <stringProp name="Argument.value">getmap</stringProp>
+              <stringProp name="Argument.value">GetMap</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
             <elementProp name="version" elementType="HTTPArgument">
