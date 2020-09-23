@@ -17,6 +17,11 @@ delayBetweenRequests=100 #ms
 projection=ESPG:4326
 imageFormat=png
 
+#bounding box (must be EPSG:4326)
+minX=-180
+minY=-90
+maxX=180
+maxY=90
 
 ## test script stat do not modify ###
 #preperations
@@ -27,7 +32,7 @@ mkdir -p ${dir}
 #test
 ${jmeterBin}/jmeter -n -t ./tms.jmx -l ${dir}/tms-res.jtl -JtargetHost=${host} -JtargetPort=${port} -Jusers=${users} -JrequestsPerUser=${userRequests} \
         -JrunTimeSec=${runTimeSec} -Jlayer=${layer} -Jversion=${version} -JtmsUrl=${tmsUrl} -JdelayBetweemRequestsMs=${delayBetweenRequests} \
-        -Jprojection=${projection} -JimageFormat=${imageFormat}
+        -Jprojection=${projection} -JimageFormat=${imageFormat} -JminX=${minX} -JminY=${minY} -JmaxX=${maxX} -JmaxY=${maxY}
 #generate reports
 ${jmeterBin}/JMeterPluginsCMD.sh --generate-png ${dir}/tms-test-rtot.png --generate-csv ${dir}/tms-test-rtot.csv --input-jtl ${dir}/tms-res.jtl --plugin-type ResponseTimesOverTime --width 800 --height 600
 ${jmeterBin}/JMeterPluginsCMD.sh --generate-csv ${dir}/tms-test-agg.csv --input-jtl ${dir}/tms-res.jtl --plugin-type AggregateReport
