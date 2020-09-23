@@ -10,17 +10,17 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="layer" elementType="Argument">
             <stringProp name="Argument.name">layer</stringProp>
-            <stringProp name="Argument.value">${__P(layer,1000)}</stringProp>
+            <stringProp name="Argument.value">${__P(layer,1002)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="publishDb" elementType="Argument">
             <stringProp name="Argument.name">publishDb</stringProp>
-            <stringProp name="Argument.value">${__P(publishDb,imagery_test)}</stringProp>
+            <stringProp name="Argument.value">${__P(publishDb,blue_m_flat2d-v001)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="version" elementType="Argument">
             <stringProp name="Argument.name">version</stringProp>
-            <stringProp name="Argument.value">${__P(version,3)}</stringProp>
+            <stringProp name="Argument.value">${__P(version,1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="runTimeSec" elementType="Argument">
@@ -40,12 +40,12 @@
           </elementProp>
           <elementProp name="users" elementType="Argument">
             <stringProp name="Argument.name">users</stringProp>
-            <stringProp name="Argument.value">${__P(users,100)}</stringProp>
+            <stringProp name="Argument.value">${__P(users,1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="targetHost" elementType="Argument">
             <stringProp name="Argument.name">targetHost</stringProp>
-            <stringProp name="Argument.value">${__P(targetHost,localhost)}</stringProp>
+            <stringProp name="Argument.value">${__P(targetHost,10.28.11.125)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="targetPort" elementType="Argument">
@@ -76,6 +76,26 @@
           <elementProp name="z" elementType="Argument">
             <stringProp name="Argument.name">z</stringProp>
             <stringProp name="Argument.value"></stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="minX" elementType="Argument">
+            <stringProp name="Argument.name">minX</stringProp>
+            <stringProp name="Argument.value">${__P(minX,-180)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="minY" elementType="Argument">
+            <stringProp name="Argument.name">minY</stringProp>
+            <stringProp name="Argument.value">${__P(minY,-90)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="maxX" elementType="Argument">
+            <stringProp name="Argument.name">maxX</stringProp>
+            <stringProp name="Argument.value">${__P(maxX,180)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="maxY" elementType="Argument">
+            <stringProp name="Argument.name">maxY</stringProp>
+            <stringProp name="Argument.value">${__P(maxY,90)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -132,13 +152,50 @@
 	return min + Math.floor(Math.random() * Math.floor(max));
 }
 
+function log2(value){
+  return Math.log(value)/Math.LN2;
+}
 
-var z = randomInt(vars.get(&apos;maxZ&apos;),1); //get random zoom level from 0 to 21
-var maxY = Math.pow(2, z);
-var y = randomInt(maxY);
-var maxX = maxY * vars.get(&apos;zoom0Width&apos;);
-var x = randomInt(maxX);
+//load configurations
+var zoom0Width = Number(vars.get(&apos;zoom0Width&apos;));
+var bbox = {
+	minX: Number(vars.get(&apos;minX&apos;)),
+	minY: Number(vars.get(&apos;minY&apos;)),
+	maxX: Number(vars.get(&apos;maxX&apos;)),
+	maxY: Number(vars.get(&apos;maxY&apos;))
+};
+var maxZ =Number(vars.get(&apos;maxZ&apos;));
 
+//change bbox ref point to remove negative cords
+bbox.minX+=180;
+bbox.maxX+=180;
+bbox.minY+=90;
+bbox.maxY+=90;
+
+//get random zoom level from 1 to 21 where the entire tile is inside the bbox limit
+var minZx = log2(360/(zoom0Width*(bbox.maxX-bbox.minX)));
+var minZy = log2(360/(bbox.maxY-bbox.minY));
+var minZ = Math.floor(Math.min(minZx,minZy));
+minZ+=1; // in case bbox is split between multiple tiles
+if(maxZ&lt;minZ)
+  throw new Error(&apos;bbox is too small to fit in the defined maximum zoom level&apos;);
+var z = randomInt(maxZ,minZ); 
+
+//generate y
+var yTiles = Math.pow(2, z);
+var yTileHeight = 180/yTiles;
+var minY = Math.ceil(bbox.minY/yTileHeight);
+var maxY = Math.floor(bbox.maxY/yTileHeight);
+var y = randomInt(maxY,minY);
+
+//generate x
+var  xTiles = yTiles * zoom0Width;
+var xTileWidth = 360/xTiles;
+var minX = Math.ceil(bbox.minX/xTileWidth);
+var maxX = Math.floor(bbox.maxX/xTileWidth);
+var x = randomInt(maxX,minX);
+
+//save generated values to use in request
 vars.put(&apos;x&apos;,x);
 vars.put(&apos;y&apos;,y);
 vars.put(&apos;z&apos;,z);
