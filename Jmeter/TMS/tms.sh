@@ -14,7 +14,7 @@ users=100
 userRequests=100
 runTimeMin=1
 delayBetweenRequests=100 #ms
-projection=ESPG:4326
+projection=EPSG:4326
 imageFormat=png
 
 #bounding box (must be EPSG:4326)
