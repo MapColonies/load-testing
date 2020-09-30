@@ -15,7 +15,7 @@
           </elementProp>
           <elementProp name="targetPort" elementType="Argument">
             <stringProp name="Argument.name">targetPort</stringProp>
-            <stringProp name="Argument.value">${__P(targetPort,80)}</stringProp>
+            <stringProp name="Argument.value">${__P(targetPort,8600)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="wmtsUrl" elementType="Argument">
@@ -140,7 +140,7 @@
               <stringProp name="XPathExtractor.default"></stringProp>
               <stringProp name="XPathExtractor.refname">matrixSetLink</stringProp>
               <stringProp name="XPathExtractor.matchNumber">-1</stringProp>
-              <stringProp name="XPathExtractor.xpathQuery">//Capabilities/Contents/Layer[Identifier=&quot;${layer}&quot;]/TileMatrixSetLink[Identifier=&quot;${TileMatrixSet}&quot;]</stringProp>
+              <stringProp name="XPathExtractor.xpathQuery">//Capabilities/Contents/Layer[Identifier=&quot;${layer}&quot;]/TileMatrixSetLink[TileMatrixSet=&quot;${projection}&quot;]</stringProp>
               <boolProp name="XPathExtractor.fragment">true</boolProp>
               <boolProp name="XPathExtractor.validate">false</boolProp>
               <boolProp name="XPathExtractor.tolerant">false</boolProp>
@@ -252,24 +252,48 @@
               <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
-              <stringProp name="script">def matrixSetXml = vars.get(&apos;matrixSet&apos;);
+              <stringProp name="script">rnd = new Random();
+
+def random(int min, int max){
+    def delta = max-min;
+    return min + rnd.nextInt(delta);
+}
+
+
+def matrixSetXml = vars.get(&apos;matrixSet&apos;);
 def matrixSetLinkXml = vars.get(&apos;matrixSetLink&apos;);
-def rnd = new Random();
 
 def matrixSet = new XmlSlurper().parseText(matrixSetXml);
 def setSize = matrixSet.TileMatrix.size();
 def matrix = matrixSet.TileMatrix[rnd.nextInt(setSize)];
-
 def matrixName = matrix.Identifier.text();
-def x = rnd.nextInt(matrix.MatrixWidth.toInteger());
-def y = rnd.nextInt(matrix.MatrixHeight.toInteger());
+
+def minX = 1;
+def minY = 1;
+def maxX = matrix.MatrixWidth.toInteger();
+def maxY = matrix.MatrixHeight.toInteger();
+
+def matrixSetLink = new XmlSlurper().parseText(matrixSetLinkXml);
+if (matrixSetLink.TileMatrixSetLimits.size()!=0){
+    def limit = matrixSetLink.TileMatrixSetLimits.children().find{ limit -&gt; limit.TileMatrix.text() == matrixName };
+    if(limit.size() != 0)
+    {
+        minY = limit.MinTileRow.toInteger();
+        maxY = limit.MaxTileRow.toInteger();
+        minX = limit.MinTileCol.toInteger();
+        maxX = limit.MaxTileCol.toInteger();
+    }
+}
+def x = random(minX,maxX);
+def y = random(minY,maxY);
 
 //def str =&apos;matrix: &apos;+ matrixName + &apos; x: &apos; + x + &apos; y: &apos;+ y;
 //log.info(str)
 
 vars.put(&apos;TileMatrix&apos;,matrixName);
 vars.put(&apos;TileCol&apos;,x.toString());
-vars.put(&apos;TileRow&apos;,y.toString());</stringProp>
+vars.put(&apos;TileRow&apos;,y.toString());
+</stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
             </JSR223PreProcessor>
             <hashTree/>
