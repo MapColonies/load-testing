@@ -25,7 +25,7 @@
           </elementProp>
           <elementProp name="layer" elementType="Argument">
             <stringProp name="Argument.name">layer</stringProp>
-            <stringProp name="Argument.value">${__P(layer,GS_Workspace:bluemarble_4km)}</stringProp>
+            <stringProp name="Argument.value">${__P(layer,GS_Workspace:057286465010_01_assembly_201217062456_Pyramids)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="version" elementType="Argument">
@@ -45,7 +45,7 @@
           </elementProp>
           <elementProp name="users" elementType="Argument">
             <stringProp name="Argument.name">users</stringProp>
-            <stringProp name="Argument.value">${__P(users,1)}</stringProp>
+            <stringProp name="Argument.value">${__P(users,5)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="runTimeSec" elementType="Argument">
@@ -256,7 +256,8 @@
 
 def random(int min, int max){
     def delta = max-min;
-    return min + rnd.nextInt(delta);
+    def randValue = delta ? rnd.nextInt(delta) : 0;
+    return min + randValue;
 }
 
 
@@ -265,7 +266,8 @@ def matrixSetLinkXml = vars.get(&apos;matrixSetLink&apos;);
 
 def matrixSet = new XmlSlurper().parseText(matrixSetXml);
 def setSize = matrixSet.TileMatrix.size();
-def matrix = matrixSet.TileMatrix[rnd.nextInt(setSize)];
+def matrixIdx=rnd.nextInt(setSize);
+def matrix = matrixSet.TileMatrix[matrixIdx];
 def matrixName = matrix.Identifier.text();
 
 def minX = 1;
@@ -274,7 +276,7 @@ def maxX = matrix.MatrixWidth.toInteger();
 def maxY = matrix.MatrixHeight.toInteger();
 
 def matrixSetLink = new XmlSlurper().parseText(matrixSetLinkXml);
-if (matrixSetLink.TileMatrixSetLimits.size()!=0){
+if (matrixSetLink.TileMatrixSetLimits.size()!=0){	
     def limit = matrixSetLink.TileMatrixSetLimits.children().find{ limit -&gt; limit.TileMatrix.text() == matrixName };
     if(limit.size() != 0)
     {
@@ -284,11 +286,10 @@ if (matrixSetLink.TileMatrixSetLimits.size()!=0){
         maxX = limit.MaxTileCol.toInteger();
     }
 }
+
 def x = random(minX,maxX);
 def y = random(minY,maxY);
 
-//def str =&apos;matrix: &apos;+ matrixName + &apos; x: &apos; + x + &apos; y: &apos;+ y;
-//log.info(str)
 
 vars.put(&apos;TileMatrix&apos;,matrixName);
 vars.put(&apos;TileCol&apos;,x.toString());
