@@ -1,5 +1,5 @@
 import pandas as pd
-params_data = pd.read_csv("wmts-params-5k.csv")
+params_data = pd.read_csv("D:\\map_colonies\\load-testing\\locust_load_testing\\geoServer_load_testing\\wmts-params-5k.csv")
 iter_params = params_data.iterrows()
 
 x = iter_params

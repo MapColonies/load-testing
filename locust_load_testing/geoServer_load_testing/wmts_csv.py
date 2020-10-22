@@ -17,7 +17,7 @@ TILEMATRIXSET = "EPSG:4326"
 class UserBehaviour(TaskSet):
 
     def on_start(self):
-        self.params_data = pd.read_csv("wmts-params-5k.csv")
+        self.params_data = pd.read_csv("D:\\map_colonies\\load-testing\\locust_load_testing\\geoServer_load_testing\\wmts-params-5k.csv")
         self.iter_params = self.params_data.iterrows()
         self.csv_data_iter = self.iter_params
 

@@ -1,2 +1,3 @@
 pandas
+gevent==1.3.4
 locustio==0.11.0
